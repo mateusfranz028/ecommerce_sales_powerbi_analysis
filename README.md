@@ -7,7 +7,7 @@
 Interactive Power BI dashboard evaluating commercial performance, regional logistics costs, product categories, and temporal seasonality on the public Olist e-commerce dataset (~108k orders, totaling R$ 13.05M in gross merchandise value).
 
 ### Dashboard File
-Download the interactive Power BI file: [ecommerce_sales_powerbi_analysis.pbix]([ecommerce_sales_powerbi_analysis.pbix](https://github.com/mateusfranz028/ecommerce_sales_powerbi_analysis/raw/refs/heads/main/ecommerce_sales_powerbi_analysis.pbix)
+Download the interactive Power BI file: [ecommerce_sales_powerbi_analysis.pbix](https://github.com/mateusfranz028/ecommerce_sales_powerbi_analysis/raw/refs/heads/main/ecommerce_sales_powerbi_analysis.pbix)
 
 ---
 
