@@ -1,4 +1,3 @@
-```markdown
 # E-Commerce Sales & Logistics Analytics (Power BI)
 
 ## Dashboard Overview
@@ -18,8 +17,6 @@ Download the interactive Power BI file: [ecommerce_sales_powerbi_analysis.pbix](
 2. **Top Categories:** Which product categories drive the highest revenue versus transactional volume?
 3. **Regional Concentration & Logistics Friction:** Which Brazilian states generate the most revenue, and how does freight share vary across regions?
 4. **Seasonality & Outliers:** Were historical revenue spikes driven by transactional anomalies (outliers) or organic scale (e.g., Black Friday)?
-
----
 
 ## Dashboard Build
 
