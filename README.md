@@ -1,8 +1,8 @@
-# E-Commerce Sales & Logistics Analytics (Power BI)
+# E-Commerce Sales & Logistics Analytics Dashboard
 
-## Dashboard Overview
 
-![Olist Executive Dashboard](assets/dashboard_screenshot.png)
+<img width="1380" height="777" alt="Animação" src="https://github.com/user-attachments/assets/22b90b9c-3511-4fae-990e-0b3347fd1481" />
+
 
 Interactive Power BI dashboard evaluating commercial performance, regional logistics costs, product categories, and temporal seasonality on the public Olist e-commerce dataset (~108k orders, totaling R$ 13.05M in gross merchandise value).
 
