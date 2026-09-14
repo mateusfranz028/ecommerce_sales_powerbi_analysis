@@ -45,29 +45,45 @@ The dataset used for this project contains real-world Brazilian marketplace tran
 
 ## Technical Pipeline & Implementation
 
-### 1. Relational Data Extraction (SQL)
+### 1. 🗄️ Relational Data Extraction (SQL)
 
 The analytical dataset was consolidated in PostgreSQL by joining transactional, customer, and catalog tables while filtering out non-commercial order statuses (cancels and non-deliveries).
 
 ```sql
 SELECT 
-    o.order_id,
-    o.order_purchase_timestamp AS data_compra,
-    o.order_delivered_customer_date AS data_entrega,
-    p.product_category_name AS categoria,
-    c.customer_city AS cidade_cliente,
-    c.customer_state AS uf_cliente,
-    oi.price AS preco,
-    oi.freight_value AS frete,
-    (oi.price + oi.freight_value) AS valor_total
-FROM olist_orders_dataset o
-JOIN olist_order_items_dataset oi ON o.order_id = oi.order_id
-JOIN olist_customers_dataset c ON o.customer_id = c.customer_id
-JOIN olist_products_dataset p ON oi.product_id = p.product_id
-WHERE o.order_status = 'delivered';
+    products.product_category_name,
+    SUM(order_items.price) AS faturamento_total
+FROM order_items
+LEFT JOIN products ON order_items.product_id = products.product_id
+LEFT JOIN orders ON order_items.order_id = orders.order_id
+WHERE orders.order_status = 'delivered'
+GROUP BY products.product_category_name
+ORDER BY faturamento_total DESC
+LIMIT 10;
+
+SELECT 
+    order_items.order_id,
+    orders.order_purchase_timestamp AS data_compra,
+    orders.order_delivered_customer_date AS data_entrega,
+    products.product_category_name AS categoria,
+    customers.customer_city AS cidade_cliente,
+    customers.customer_state AS uf_cliente,
+    order_items.price AS preco,
+    order_items.freight_value AS frete,
+    (order_items.price + order_items.freight_value) AS valor_total
+FROM order_items
+LEFT JOIN products 
+    ON order_items.product_id = products.product_id
+LEFT JOIN orders 
+    ON order_items.order_id = orders.order_id
+LEFT JOIN customers 
+    ON orders.customer_id = customers.customer_id
+WHERE orders.order_status = 'delivered'
+  AND orders.order_delivered_customer_date IS NOT NULL
+  AND products.product_category_name IS NOT NULL;
 ```
 
-### 2. Data Auditing & Sanity Checks (Excel & Power Query)
+### 2. 🔍 Data Auditing & Sanity Checks (Excel & Power Query)
 Before visualization, the dataset underwent an exploratory audit:
 
 Locale & Type Sanitation: Handled UTF-8 encoding and decimal separators (. vs. ,) to prevent scale distortions.
@@ -76,7 +92,13 @@ Granularity Audit: Verified total volume (108,652 line items across 95,140 uniqu
 
 Temporal Decomposition: Handled timestamp strings into year-month cohorts to distinguish structural Black Friday demand from single-ticket bulk outliers.
 
-### 3. Metric Architecture & Data Modeling (DAX)
+
+<img width="1516" height="281" alt="image" src="https://github.com/user-attachments/assets/9c1a3eea-5fb9-4382-ac89-d25d24db8083" />
+
+
+
+
+### 3. 📐 Metric Architecture & Data Modeling (DAX)
 
 A dedicated _Medidas table was constructed in Power BI Desktop to compute dynamic metrics:
 
@@ -89,7 +111,7 @@ Total Frete   = SUM(olist_base_analitica[frete])
 ano_mes       = LEFT(olist_base_analitica[data_compra], 7)
 ```
 
-### Key Insights & Visual Deep Dives
+### 📈 Key Insights & Visual Deep Dives
 Executive KPIs
 
 - Consolidated Revenue: R$ 13.05M
@@ -103,13 +125,17 @@ Executive KPIs
   <img width="1477" height="216" alt="image" src="https://github.com/user-attachments/assets/03a6c494-9f9c-4688-bba9-fe6838455887" />
 
 
-### Top Categories by Revenue
+### 🏆 Top Categories by Revenue
 
 - Volume Engine: beleza_saude leads overall sales (R$ 1.23M) driven by strong repurchase frequency and a accessible average ticket (R$ 130.28).
 
 - High-Ticket Segments: relogios_presentes (R$ 1.17M) and cama_mesa_banho (R$ 1.02M) form the remaining core revenue pillars, combining to represent over a quarter of platform sales.
 
-### Monthly Revenue Trend & Seasonality
+
+  <img width="540" height="573" alt="image" src="https://github.com/user-attachments/assets/75030ac8-47a8-4b5b-9704-484366b904e1" />
+
+
+### 📅 Monthly Revenue Trend & Seasonality
 
 - Inflection Point: Sales accelerated rapidly from modest monthly runs (~R$ 40K–R$ 100K) early in 2017 to sustained runs of R$ 800K–R$ 950K/month in 2018.
 
@@ -117,13 +143,21 @@ Executive KPIs
 
 - Outlier Isolation: Identifying and isolating bulk commercial orders in September 2017 confirmed that long-term scale was volume-driven rather than ticket-inflated.
 
-### Regional Concentration & Logistics Burden
+
+  <img width="578" height="567" alt="image" src="https://github.com/user-attachments/assets/b39ad705-b770-47f4-ac96-145bd096375f" />
+
+
+### 🗺️ Regional Concentration & Logistics Burden
 
 - The São Paulo Hub: SP accounts for 38.3% of platform revenue (R$ 5.00M) with the lowest freight burden in Brazil (14% ratio to product price), acting as the central logistics anchor.
 
 - Long-Haul Friction: Customers in the North and Northeast face severe logistics friction, with shipping costs reaching 23%–26% of cart value (e.g., Maranhão at 26%, Piauí at 24%), representing a major conversion drop-off factor.
 
-### Strategic Recommendations
+
+  <img width="290" height="542" alt="image" src="https://github.com/user-attachments/assets/094c8910-3d90-4d84-81ba-1f69c8386754" />
+
+
+### 💡 Strategic Recommendations
 
 - Regional Freight Subsidies: Introduce tiered free-shipping thresholds for light, high-turnover items (beleza_saude) in Northeast capitals to lower regional checkout abandonment.
 
